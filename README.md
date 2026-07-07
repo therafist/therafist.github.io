@@ -28,25 +28,25 @@ therafist-site/
 לכל דף מתוך `js/main.js` — שינוי אחד שם מתעדכן בכל האתר.
 פרטי הקשר (טלפון, מייל, קישורי רשתות) מוגדרים כקבועים בראש `js/main.js`.
 
-## 🚀 פריסה ל-GitHub Pages
+## 🚀 פריסה ל-GitHub Pages (User Site)
 
-1. צרו ריפוזיטורי חדש ב-GitHub (למשל `therafist`).
+האתר מוגדר כ-**GitHub User Site** של החשבון `therafist` ורץ מהדומיין הראשי:
+**https://therafist.github.io** (ללא תת-נתיב).
+
+1. שם הריפוזיטורי חייב להיות בדיוק: **`therafist.github.io`**.
 2. מתוך תיקיית הפרויקט:
    ```bash
-   git init
-   git add .
-   git commit -m "TheraFist website"
-   git branch -M main
-   git remote add origin https://github.com/USERNAME/therafist.git
+   git remote add origin https://github.com/therafist/therafist.github.io.git
    git push -u origin main
    ```
 3. ב-GitHub: **Settings → Pages → Source: Deploy from a branch → Branch: `main` / root → Save**.
-4. תוך דקה-שתיים האתר יעלה בכתובת:
-   `https://USERNAME.github.io/therafist/`
+   (בריפוזיטורי בשם `USERNAME.github.io` זה בדרך כלל מופעל אוטומטית.)
+4. תוך דקה-שתיים האתר יעלה בכתובת: `https://therafist.github.io`
 
-> כל הנתיבים באתר יחסיים (`images/...`, `css/...`), ולכן האתר עובד גם
-> תחת תת-נתיב של GitHub Pages וגם בדומיין מותאם אישית — בלי שום שינוי.
-> אין ראוטר ואין צד-שרת, ולכן אין בעיות 404.
+> כל נתיבי הנכסים באתר יחסיים (`images/...`, `css/...`) — אין base path,
+> אין ראוטר ואין צד-שרת, ולכן האתר רץ מה-root בלי שום קונפיגורציה ובלי בעיות 404.
+> אם הרשת חוסמת push גדול (שגיאת 408), הריצו פעם אחת:
+> `git config http.version HTTP/1.1`
 
 ### דומיין מותאם אישית (אופציונלי)
 ב-**Settings → Pages → Custom domain** הזינו את הדומיין ועדכנו רשומת CNAME אצל ספק הדומיין.
