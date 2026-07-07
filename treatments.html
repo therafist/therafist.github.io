@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap" rel="stylesheet">
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem("theme")||"dark"}catch(e){}</script>
+  <script>try{var d=document.documentElement;d.dataset.theme=localStorage.getItem("theme")||"dark";var a=JSON.parse(localStorage.getItem("a11y")||"{}");if(typeof a.font==="number"&&a.font!==100)d.setAttribute("data-a11y-font",Math.min(140,Math.max(90,a.font)));["grayscale","contrast","links","readable"].forEach(function(k){if(a[k])d.classList.add("a11y-"+k)});if(a.motion)d.classList.add("a11y-no-motion")}catch(e){}</script>
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -69,7 +69,7 @@
         </div>
         <div class="container--narrow mt-3">
           <div class="video-frame reveal">
-            <video controls preload="metadata" playsinline>
+            <video controls preload="metadata" playsinline title="סרטון: אביחי מטפל בלוחם פצוע בשיטת TheraFist" aria-label="סרטון: אביחי מטפל בלוחם פצוע בשיטת TheraFist">
               <source src="videos/lohem.mp4" type="video/mp4">
               הדפדפן שלך לא תומך בניגון וידאו.
               <a href="videos/lohem.mp4">להורדת הסרטון</a>
@@ -107,7 +107,7 @@
         </div>
         <div class="reveal reveal--left">
           <div class="video-frame video-frame--portrait">
-            <video controls preload="metadata" playsinline>
+            <video controls preload="metadata" playsinline title="סרטון: אביחי מדגים תרגיל חיזוק עם משקולות" aria-label="סרטון: אביחי מדגים תרגיל חיזוק עם משקולות">
               <source src="videos/video_2.mp4" type="video/mp4">
               הדפדפן שלך לא תומך בניגון וידאו.
               <a href="videos/video_2.mp4">להורדת הסרטון</a>

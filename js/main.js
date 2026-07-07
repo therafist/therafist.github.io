@@ -64,7 +64,7 @@
   }).join("");
 
   var headerHTML =
-    '<a class="skip-link" href="#main">דילוג לתוכן הראשי</a>' +
+    '<a class="skip-link" href="#main">דלג לתוכן המרכזי</a>' +
     '<header class="site-header">' +
     '  <div class="header-inner">' +
     '    <a class="brand" href="index.html" aria-label="TheraFist — דף הבית">' +
@@ -112,6 +112,7 @@
     '          <li><a href="mailto:' + EMAIL + '">' + EMAIL + "</a></li>" +
     '          <li><a href="https://maps.google.com/?q=' + encodeURIComponent('קק"ל 7, פתח תקווה') + '" target="_blank" rel="noopener">קק״ל 7, פתח תקווה</a></li>' +
     '          <li><a href="' + WA_DEFAULT + '" target="_blank" rel="noopener">שליחת הודעת וואטסאפ</a></li>' +
+    '          <li><a href="accessibility.html">הצהרת נגישות</a></li>' +
     "        </ul>" +
     "      </div>" +
     "    </div>" +
@@ -299,6 +300,127 @@
           "?subject=" + encodeURIComponent("פנייה חדשה מהאתר — TheraFist") +
           "&body=" + encodeURIComponent(buildMessage());
       });
+    }
+    /* accessible error state: native browser message + aria-invalid marking */
+    form.querySelectorAll("input, select, textarea").forEach(function (field) {
+      if (field.required) field.setAttribute("aria-required", "true");
+      field.addEventListener("invalid", function () { field.setAttribute("aria-invalid", "true"); });
+      field.addEventListener("input", function () { field.removeAttribute("aria-invalid"); });
+    });
+  });
+
+  /* ============================================================
+     Accessibility widget
+     ============================================================ */
+  var A11Y_KEY = "a11y";
+  var A11Y_FLAGS = ["grayscale", "contrast", "links", "motion", "readable"];
+  var a11yState = { font: 100, grayscale: false, contrast: false, links: false, motion: false, readable: false };
+  try {
+    var saved = JSON.parse(localStorage.getItem(A11Y_KEY) || "{}");
+    A11Y_FLAGS.forEach(function (k) { if (typeof saved[k] === "boolean") a11yState[k] = saved[k]; });
+    if (typeof saved.font === "number") a11yState.font = Math.min(140, Math.max(90, saved.font));
+  } catch (e) { /* private mode */ }
+
+  var A11Y_LABELS = {
+    grayscale: "גווני אפור",
+    contrast: "ניגודיות גבוהה",
+    links: "הדגשת קישורים",
+    motion: "עצירת אנימציות",
+    readable: "פונט קריא"
+  };
+
+  var a11yHTML =
+    '<button class="a11y-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11y-panel" aria-label="פתיחת תפריט נגישות">' +
+    '  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="4.3" r="2.1"/><path d="M21 7.2c-2.9.8-5.9 1.2-9 1.2s-6.1-.4-9-1.2l-.5 1.9c2 .56 4.1.95 6.2 1.14v2.66l-2.5 7.4 1.9.66 2.4-7.06h2l2.4 7.06 1.9-.66-2.5-7.4v-2.66c2.1-.19 4.2-.58 6.2-1.14z"/></svg>' +
+    "</button>" +
+    '<div class="a11y-panel" id="a11y-panel" role="dialog" aria-modal="false" aria-label="הגדרות נגישות">' +
+    "  <h2>הגדרות נגישות</h2>" +
+    "  <p>ההעדפות נשמרות בדפדפן שלך לביקורים הבאים.</p>" +
+    '  <div class="a11y-grid">' +
+    '    <div class="a11y-fontsize">' +
+    '      <button type="button" data-a11y-font="-10" aria-label="הקטנת טקסט">א−</button>' +
+    "      <span>גודל טקסט <output aria-live=\"polite\"></output></span>" +
+    '      <button type="button" data-a11y-font="10" aria-label="הגדלת טקסט">א+</button>' +
+    "    </div>" +
+    A11Y_FLAGS.map(function (k) {
+      return '<button type="button" class="a11y-opt" data-a11y-toggle="' + k + '" aria-pressed="false">' + A11Y_LABELS[k] + "</button>";
+    }).join("") +
+    '    <button type="button" class="a11y-opt a11y-reset" data-a11y-reset>↺ איפוס הגדרות</button>' +
+    "  </div>" +
+    '  <a class="a11y-panel__link" href="accessibility.html">הצהרת נגישות</a>' +
+    "</div>";
+  document.body.insertAdjacentHTML("beforeend", a11yHTML);
+
+  var a11yBtn = document.querySelector(".a11y-btn");
+  var a11yPanel = document.getElementById("a11y-panel");
+  var a11yOut = a11yPanel.querySelector("output");
+
+  function a11yApply() {
+    var d = document.documentElement;
+    if (a11yState.font !== 100) d.setAttribute("data-a11y-font", a11yState.font);
+    else d.removeAttribute("data-a11y-font");
+    d.classList.toggle("a11y-grayscale", a11yState.grayscale);
+    d.classList.toggle("a11y-contrast", a11yState.contrast);
+    d.classList.toggle("a11y-links", a11yState.links);
+    d.classList.toggle("a11y-no-motion", a11yState.motion);
+    d.classList.toggle("a11y-readable", a11yState.readable);
+    try { localStorage.setItem(A11Y_KEY, JSON.stringify(a11yState)); } catch (e) { /* private mode */ }
+    a11yPanel.querySelectorAll("[data-a11y-toggle]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(!!a11yState[b.getAttribute("data-a11y-toggle")]));
+    });
+    a11yOut.textContent = a11yState.font + "%";
+  }
+  a11yApply();
+
+  function a11yOpen() {
+    a11yPanel.classList.add("open");
+    a11yBtn.setAttribute("aria-expanded", "true");
+    a11yBtn.setAttribute("aria-label", "סגירת תפריט נגישות");
+    a11yPanel.querySelector("button").focus();
+  }
+  function a11yClose(refocus) {
+    a11yPanel.classList.remove("open");
+    a11yBtn.setAttribute("aria-expanded", "false");
+    a11yBtn.setAttribute("aria-label", "פתיחת תפריט נגישות");
+    if (refocus) a11yBtn.focus();
+  }
+  a11yBtn.addEventListener("click", function () {
+    a11yPanel.classList.contains("open") ? a11yClose(false) : a11yOpen();
+  });
+  a11yPanel.addEventListener("click", function (e) {
+    var fontBtn = e.target.closest("[data-a11y-font]");
+    if (fontBtn) {
+      a11yState.font = Math.min(140, Math.max(90, a11yState.font + Number(fontBtn.getAttribute("data-a11y-font"))));
+      a11yApply();
+      return;
+    }
+    var toggleBtn = e.target.closest("[data-a11y-toggle]");
+    if (toggleBtn) {
+      var key = toggleBtn.getAttribute("data-a11y-toggle");
+      a11yState[key] = !a11yState[key];
+      a11yApply();
+      return;
+    }
+    if (e.target.closest("[data-a11y-reset]")) {
+      a11yState = { font: 100, grayscale: false, contrast: false, links: false, motion: false, readable: false };
+      a11yApply();
+    }
+  });
+  /* keyboard: Escape closes, Tab is trapped while open */
+  document.addEventListener("keydown", function (e) {
+    if (!a11yPanel.classList.contains("open")) return;
+    if (e.key === "Escape") { a11yClose(true); return; }
+    if (e.key !== "Tab") return;
+    var focusables = a11yPanel.querySelectorAll("button, a[href]");
+    var first = focusables[0];
+    var last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  /* click outside closes */
+  document.addEventListener("click", function (e) {
+    if (a11yPanel.classList.contains("open") && !e.target.closest(".a11y-panel") && !e.target.closest(".a11y-btn")) {
+      a11yClose(false);
     }
   });
 })();

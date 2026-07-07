@@ -1210,3 +1210,188 @@ h1, h2, h3 { line-height: 1.25; font-weight: 800; }
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ============================================================
+   Accessibility layer
+   ============================================================ */
+
+/* ---------- font scaling (rem-based type scales with html font-size) ---------- */
+html[data-a11y-font="90"]  { font-size: 90%; }
+html[data-a11y-font="110"] { font-size: 110%; }
+html[data-a11y-font="120"] { font-size: 120%; }
+html[data-a11y-font="130"] { font-size: 130%; }
+html[data-a11y-font="140"] { font-size: 140%; }
+
+/* ---------- grayscale (filter on the root element is exempt from
+   creating a containing block, so fixed elements keep working) ---------- */
+html.a11y-grayscale { filter: grayscale(1); }
+
+/* ---------- high contrast: variable overrides per theme ---------- */
+html.a11y-contrast {
+  --bg: #000; --bg-2: #000; --bg-3: #050505; --card: #0b0b0b;
+  --line: rgba(255, 210, 87, 0.55); --line-soft: rgba(255, 210, 87, 0.3);
+  --gold: #ffd257; --gold-2: #ffe08a; --gold-deep: #ffc82e;
+  --text: #fff; --text-soft: #fff; --text-softer: #fff; --muted: #ded6c2;
+  --header-bg: #000; --header-bg-scrolled: #000;
+  --nav-panel-bg: #000; --nav-panel-link: #fff;
+  --input-bg: #000;
+}
+html[data-theme="light"].a11y-contrast {
+  --bg: #fff; --bg-2: #fff; --bg-3: #f4f4f4; --card: #fff;
+  --line: rgba(0, 0, 0, 0.6); --line-soft: rgba(0, 0, 0, 0.35);
+  --gold: #5c3f05; --gold-2: #3f2b03; --gold-deep: #2e1f02;
+  --text: #000; --text-soft: #000; --text-softer: #000; --muted: #2e2a22;
+  --header-bg: #fff; --header-bg-scrolled: #fff;
+  --nav-panel-bg: #fff; --nav-panel-link: #000;
+  --input-bg: #fff;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- link emphasis ---------- */
+html.a11y-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* ---------- readable font ---------- */
+html.a11y-readable body,
+html.a11y-readable button,
+html.a11y-readable input,
+html.a11y-readable select,
+html.a11y-readable textarea,
+html.a11y-readable h1, html.a11y-readable h2, html.a11y-readable h3,
+html.a11y-readable h4, html.a11y-readable p, html.a11y-readable a,
+html.a11y-readable li, html.a11y-readable span, html.a11y-readable blockquote {
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- stop animations (mirrors prefers-reduced-motion) ---------- */
+html.a11y-no-motion { scroll-behavior: auto; }
+html.a11y-no-motion *,
+html.a11y-no-motion *::before,
+html.a11y-no-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+html.a11y-no-motion .reveal { opacity: 1 !important; transform: none !important; }
+
+/* ---------- accessible form errors (not color-only: browser shows text bubble too) ---------- */
+.form-field [aria-invalid="true"] {
+  border-color: #e5484d !important;
+  box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.18) !important;
+}
+
+/* ---------- widget button ---------- */
+.a11y-btn {
+  position: fixed;
+  bottom: 22px;
+  inset-inline-start: 20px;
+  z-index: 260;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--gold);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s var(--ease), background 0.3s;
+}
+.a11y-btn:hover { transform: translateY(-4px) scale(1.05); }
+.a11y-btn svg { width: 30px; height: 30px; }
+
+/* ---------- widget panel ---------- */
+.a11y-panel {
+  position: fixed;
+  bottom: 86px;
+  inset-inline-start: 20px;
+  z-index: 260;
+  width: min(330px, calc(100vw - 40px));
+  max-height: min(72vh, 600px);
+  overflow: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), visibility 0.3s;
+}
+.a11y-panel.open { opacity: 1; visibility: visible; transform: none; }
+.a11y-panel h2 { font-size: 1.05rem; color: var(--gold); margin-bottom: 2px; }
+.a11y-panel > p { font-size: 0.82rem; color: var(--muted); }
+.a11y-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+.a11y-opt {
+  border: 1px solid var(--line-soft);
+  background: var(--bg-2);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 8px;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  transition: border-color 0.25s, background 0.25s;
+}
+.a11y-opt:hover { border-color: var(--gold); }
+.a11y-opt b { font-size: 1.15rem; line-height: 1.2; color: var(--gold); font-weight: 800; }
+.a11y-opt[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: rgba(232, 184, 75, 0.14);
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+.a11y-opt[aria-pressed="true"]::after {
+  content: "✓ פעיל";
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+.a11y-fontsize {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--line-soft);
+  background: var(--bg-2);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.a11y-fontsize span { font-size: 0.88rem; font-weight: 700; }
+.a11y-fontsize output { font-size: 0.85rem; color: var(--muted); min-width: 44px; text-align: center; }
+.a11y-fontsize button {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font);
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.a11y-fontsize button:hover { background: rgba(232, 184, 75, 0.14); }
+.a11y-reset { grid-column: 1 / -1; flex-direction: row; justify-content: center; }
+.a11y-panel__link {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
