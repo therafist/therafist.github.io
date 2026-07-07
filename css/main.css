@@ -43,6 +43,7 @@ body {
 }
 
 img, video { max-width: 100%; display: block; }
+img { height: auto; } /* neutralize HTML height attrs so CSS-resized images keep their ratio */
 
 a { color: var(--gold); text-decoration: none; }
 a:hover { color: var(--gold-2); }
@@ -566,6 +567,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 800; }
   transition: transform 0.8s var(--ease);
 }
 .portrait:hover img { transform: scale(1.04); }
+.portrait--wide img { aspect-ratio: 3 / 2; }
 .portrait::after {
   content: "";
   position: absolute;
