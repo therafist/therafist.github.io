@@ -1,0 +1,11 @@
+# macOS Finder metadata
+.DS_Store
+**/.DS_Store
+
+# Editor/IDE settings
+.vscode/
+.idea/
+
+# Local misc
+*.log
+Thumbs.db
