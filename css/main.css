@@ -102,10 +102,18 @@ a:hover { color: var(--gold-2); }
   display: flex;
   align-items: center;
   background: rgba(10, 9, 8, 0.62);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
   transition: background 0.35s, border-color 0.35s, height 0.35s;
+}
+/* blur lives on a pseudo-element: backdrop-filter on the header itself would
+   make it the containing block for the fixed-position mobile menu */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 .site-header.scrolled {
   height: 60px;
@@ -199,9 +207,12 @@ a:hover { color: var(--gold-2); }
   .main-nav {
     position: fixed;
     inset: 0;
-    background: rgba(10, 9, 8, 0.97);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    z-index: 240; /* above header content, below the toggle (250) so it stays clickable */
+    background: rgba(5, 4, 2, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(232, 184, 75, 0.25);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(232, 184, 75, 0.18);
     display: grid;
     place-items: center;
     opacity: 0;
@@ -210,7 +221,12 @@ a:hover { color: var(--gold-2); }
   }
   .main-nav.open { opacity: 1; visibility: visible; }
   .main-nav ul { flex-direction: column; gap: 10px; text-align: center; }
-  .main-nav a { font-size: 1.35rem; padding: 10px 26px; }
+  .main-nav a {
+    font-size: 1.35rem;
+    padding: 10px 26px;
+    color: #fff7df;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+  }
   .main-nav.open li {
     animation: navIn 0.5s var(--ease) both;
   }
