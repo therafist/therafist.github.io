@@ -29,8 +29,30 @@
     phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
     instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>',
     facebook: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.9v-8.4h2.8l.42-3.26H13.5V8.16c0-.94.26-1.59 1.62-1.59h1.72V3.65c-.3-.04-1.32-.13-2.5-.13-2.48 0-4.18 1.51-4.18 4.3v2.4H7.35v3.27h2.81v8.4h3.34z"/></svg>',
-    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>'
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>',
+    sun: '<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg>',
+    moon: '<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>'
   };
+
+  /* ---------- theme (dark is the default; saved choice wins) ---------- */
+  function getTheme() {
+    return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem("theme", theme); } catch (e) { /* private mode */ }
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", theme === "light" ? "#faf6ee" : "#0a0908");
+    document.querySelectorAll(".theme-toggle").forEach(function (btn) {
+      var toLight = theme === "dark";
+      btn.setAttribute("aria-label", toLight ? "מעבר למצב בהיר" : "מעבר למצב כהה");
+      var label = btn.querySelector(".theme-toggle__label");
+      if (label) label.textContent = toLight ? "מצב בהיר" : "מצב כהה";
+    });
+  }
+  function toggleTheme() {
+    applyTheme(getTheme() === "dark" ? "light" : "dark");
+  }
 
   /* ---------- current page ---------- */
   var path = location.pathname.split("/").pop() || "index.html";
@@ -49,14 +71,17 @@
     '      <img src="images/logo.jpg" alt="הלוגו של TheraFist" width="44" height="44">' +
     "      <span>Thera<b>Fist</b></span>" +
     "    </a>" +
-    '    <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="פתיחת תפריט">' +
-    "      <span></span><span></span><span></span>" +
-    "    </button>" +
     '    <nav class="main-nav" id="main-nav" aria-label="ניווט ראשי">' +
     "      <ul>" + navLinks +
     '        <li><a class="nav-cta" href="' + WA_DEFAULT + '" target="_blank" rel="noopener">קביעת טיפול</a></li>' +
+    '        <li class="nav-theme-item"><button class="theme-toggle theme-toggle--menu" type="button">' +
+    ICONS.sun + ICONS.moon + '<span class="theme-toggle__label"></span></button></li>' +
     "      </ul>" +
     "    </nav>" +
+    '    <button class="theme-toggle" type="button">' + ICONS.sun + ICONS.moon + "</button>" +
+    '    <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="פתיחת תפריט">' +
+    "      <span></span><span></span><span></span>" +
+    "    </button>" +
     "  </div>" +
     "</header>";
 
@@ -106,6 +131,12 @@
 
   var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* theme: html[data-theme] was set by the inline head script; sync buttons + wire clicks */
+  applyTheme(getTheme());
+  document.querySelectorAll(".theme-toggle").forEach(function (btn) {
+    btn.addEventListener("click", toggleTheme);
+  });
 
   /* ---------- loader ---------- */
   var loader = document.querySelector(".loader");
