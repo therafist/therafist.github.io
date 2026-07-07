@@ -110,7 +110,7 @@
     '        <ul class="footer-links">' +
     '          <li><a href="' + PHONE_TEL + '">טלפון: <bdo dir="ltr">' + PHONE_DISPLAY + "</bdo></a></li>" +
     '          <li><a href="mailto:' + EMAIL + '">' + EMAIL + "</a></li>" +
-    '          <li><a href="https://maps.google.com/?q=' + encodeURIComponent('קק"ל 7, פתח תקווה') + '" target="_blank" rel="noopener">קק״ל 7, פתח תקווה</a></li>' +
+    '          <li>פתח תקווה והסביבה · קליניקה וביקורי בית</li>' +
     '          <li><a href="' + WA_DEFAULT + '" target="_blank" rel="noopener">שליחת הודעת וואטסאפ</a></li>' +
     '          <li><a href="accessibility.html">הצהרת נגישות</a></li>' +
     "        </ul>" +
